@@ -1,6 +1,6 @@
 module github.com/danteay/golog/adapters/slog
 
-go 1.20
+go 1.21
 
 replace (
 	github.com/danteay/golog/fields => ../../fields
