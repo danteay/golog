@@ -1,0 +1,11 @@
+go 1.22
+
+use (
+	.
+
+	adapters/slog
+	adapters/zerolog
+	example
+	fields
+	levels
+)

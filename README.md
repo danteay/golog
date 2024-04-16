@@ -2,7 +2,7 @@
 
 Syntactic sugar for logging and some other cool stuff.
 
-Implements the Adapter pattern to replace the underlying logger. By default, it uses [zerolog][1], but you can create 
+Implements the Adapter pattern to replace the underlying logger. By default, it uses [slog][1], but you can create 
 any other logger implementation by implementing the next interface:
 
 ```go
@@ -20,7 +20,7 @@ type Adapter interface {
 
 ## Requirements
 
-- Go 1.19+
+- Go 1.22+
 
 ## Install
 
@@ -230,4 +230,4 @@ the beginning of the execution and flush them at the end of the execution.
 If you use context fields with a custom store, you should flush them manually when you don't need them anymore, or
 when the current execution scope ends.
 
-[1]: https://github.com/rs/zerolog
+[1]: https://betterstack.com/community/guides/logging/logging-in-go/
