@@ -9,6 +9,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
+	"github.com/danteay/golog/adapters/slog"
 	"github.com/danteay/golog/adapters/zerolog"
 	"github.com/danteay/golog/internal/contextfields"
 	"github.com/danteay/golog/levels"
@@ -27,7 +28,7 @@ type testMsg struct {
 func TestNewLogger(t *testing.T) {
 	ctx := context.Background()
 
-	adapter := zerolog.New()
+	adapter := slog.New()
 	logger := New(WithAdapter(adapter)).SetContext(ctx)
 
 	assert.IsType(t, &Logger{}, logger)
@@ -71,7 +72,7 @@ func TestLoggerLog(t *testing.T) {
 	t.Run("Test log message", func(t *testing.T) {
 		var logOutput bytes.Buffer
 
-		adapter := zerolog.New(zerolog.WithWriter(&logOutput), zerolog.WithLevel(levels.Debug))
+		adapter := slog.New(slog.WithWriter(&logOutput), slog.WithLevel(levels.Debug))
 		logger := New(WithAdapter(adapter)).SetContext(context.Background())
 
 		level := levels.Debug

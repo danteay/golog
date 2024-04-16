@@ -1,3 +1,3 @@
 module github.com/danteay/golog/levels
 
-go 1.22
+go 1.20

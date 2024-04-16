@@ -1,6 +1,6 @@
 module github.com/danteay/golog/adapters/zerolog
 
-go 1.22
+go 1.20
 
 replace (
 	github.com/danteay/golog/fields => ../../fields

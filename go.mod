@@ -1,18 +1,18 @@
 module github.com/danteay/golog
 
-go 1.22
+go 1.20
 
 replace (
-	github.com/danteay/golog/adapters/zerolog => ./adapters/zerolog
+	github.com/danteay/golog/adapters/slog => ./adapters/slog
 	github.com/danteay/golog/fields => ./fields
 	github.com/danteay/golog/levels => ./levels
 )
 
 require (
-	github.com/danteay/golog/adapters/zerolog v0.0.0
+	github.com/danteay/golog/adapters/slog v0.0.0
+	github.com/danteay/golog/adapters/zerolog v0.0.0-20231014010943-0df47fad5edb
 	github.com/danteay/golog/fields v0.0.0
 	github.com/danteay/golog/levels v0.0.0
-	github.com/magefile/mage v1.15.0
 	github.com/stretchr/testify v1.9.0
 )
 

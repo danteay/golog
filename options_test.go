@@ -5,12 +5,12 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/danteay/golog/adapters/zerolog"
+	"github.com/danteay/golog/adapters/slog"
 )
 
 func TestWithAdapter(t *testing.T) {
 	opts := &options{}
-	adapter := zerolog.New()
+	adapter := slog.New()
 
 	WithAdapter(adapter)(opts)
 
