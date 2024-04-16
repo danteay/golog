@@ -2,8 +2,8 @@ package golog
 
 import (
 	"context"
-	"github.com/danteay/golog/adapters/slog"
 
+	"github.com/danteay/golog/adapters/slog"
 	"github.com/danteay/golog/fields"
 	"github.com/danteay/golog/internal/contextfields"
 	"github.com/danteay/golog/internal/errors"

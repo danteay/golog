@@ -10,7 +10,6 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/danteay/golog/adapters/slog"
-	"github.com/danteay/golog/adapters/zerolog"
 	"github.com/danteay/golog/internal/contextfields"
 	"github.com/danteay/golog/levels"
 )
@@ -108,7 +107,7 @@ func TestLoggerLog(t *testing.T) {
 		var logOutput bytes.Buffer
 
 		ctx := context.WithValue(context.Background(), contextfields.ExecutionContextKey, "some-exec-id")
-		adapter := zerolog.New(zerolog.WithWriter(&logOutput), zerolog.WithLevel(levels.Debug))
+		adapter := slog.New(slog.WithWriter(&logOutput), slog.WithLevel(levels.Debug))
 		logger := New(WithAdapter(adapter)).SetContext(ctx)
 		defer logger.FlushContextFields()
 
