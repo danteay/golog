@@ -11,6 +11,10 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/danteay/golog/adapters/slog"
+<<<<<<< HEAD
+=======
+	"github.com/danteay/golog/adapters/zerolog"
+>>>>>>> e2cbf83 (fix: modify mod versions)
 	"github.com/danteay/golog/internal/contextfields"
 	"github.com/danteay/golog/levels"
 )
