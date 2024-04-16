@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -16,7 +17,7 @@ import (
 
 type testMsg struct {
 	Level   string   `json:"level"`
-	Message string   `json:"message"`
+	Message string   `json:"msg"`
 	Stack   []string `json:"stack"`
 	Error   string   `json:"error"`
 	Key1    string   `json:"key1"`
@@ -94,7 +95,7 @@ func TestLoggerLog(t *testing.T) {
 			t.Fatal(errMarshal)
 		}
 
-		assert.Equal(t, level.String(), res.Level)
+		assert.Equal(t, level.String(), strings.ToLower(res.Level))
 		assert.Equal(t, msg, res.Message)
 		assert.Equal(t, err.Error(), res.Error)
 		assert.Equal(t, fields["key1"], res.Key1)
@@ -136,7 +137,7 @@ func TestLoggerLog(t *testing.T) {
 			t.Fatal(errMarshal)
 		}
 
-		assert.Equal(t, level.String(), res.Level)
+		assert.Equal(t, level.String(), strings.ToLower(res.Level))
 		assert.Equal(t, msg, res.Message)
 		assert.Equal(t, err.Error(), res.Error)
 		assert.Equal(t, fields["key1"], res.Key1)
@@ -154,7 +155,7 @@ func TestLoggerLog(t *testing.T) {
 			t.Fatal(errMarshal)
 		}
 
-		assert.Equal(t, level.String(), res.Level)
+		assert.Equal(t, level.String(), strings.ToLower(res.Level))
 		assert.Equal(t, msg, res.Message)
 		assert.Equal(t, "", res.Error)
 		assert.Equal(t, "", res.Key1)

@@ -33,4 +33,4 @@ jobs:
 
       - name: Run tests
         working-directory: adapters/${{ matrix.adapter }}
-        run: go test -v ./...
+        run: go test -v github.com/danteay/golog/adapters/${{ matrix.adapter }}

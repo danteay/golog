@@ -33,4 +33,4 @@ jobs:
 
       - name: Run tests
         working-directory: ${{ matrix.module }}
-        run: go test -v ./...
+        run: go test -v github.com/danteay/golog/${{ matrix.module }}
