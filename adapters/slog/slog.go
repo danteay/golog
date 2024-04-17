@@ -5,9 +5,10 @@ import (
 	"io"
 	"log/slog"
 	"os"
+	"runtime/debug"
+	"strings"
 
 	"github.com/danteay/golog/fields"
-	"github.com/danteay/golog/internal/errors"
 	"github.com/danteay/golog/levels"
 )
 
@@ -106,10 +107,15 @@ func getErrFields(level levels.Level, err error, curFields []any, withTrace bool
 	curFields = append(curFields, slog.Any("error", err))
 
 	if level == levels.TraceLevel || withTrace {
-		curFields = append(curFields, slog.Any("stacktrace", errors.GetStackTrace()))
+		curFields = append(curFields, slog.Any("stack", getStackTrace()))
 	}
 
 	return curFields
+}
+
+func getStackTrace() []string {
+	stack := strings.ReplaceAll(string(debug.Stack()), "\t", "")
+	return strings.Split(stack, "\n")
 }
 
 func getSlogInstance(level levels.Level, writer io.Writer) *slog.Logger {
