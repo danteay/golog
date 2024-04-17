@@ -24,8 +24,8 @@ jobs:
           fetch-depth: 2
           ref: "main"
 
-      - name: Fetch tags for adapter
-        run: git fetch --tags origin '+refs/tags/adapters/${{ matrix.adapter }}/*:refs/tags/adapters/${{ matrix.adapter }}/*'
+      - name: Fetch tags
+        run: git fetch --tags origin '+refs/tags/v*:refs/tags/v*'
 
       - name: Files modified
         id: check
