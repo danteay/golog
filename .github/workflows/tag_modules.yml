@@ -64,6 +64,10 @@ jobs:
           export REV=`cz version --project`
           echo "version=$REV" >> $GITHUB_OUTPUT
 
+      - name: Pull changes
+        if: steps.check.outputs.any_changed == 'true'
+        run: git pull
+
       - name: Push changes
         if: steps.check.outputs.any_changed == 'true'
         uses: Woile/github-push-action@master
