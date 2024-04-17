@@ -30,7 +30,7 @@ jobs:
           ref: "main"
 
       - name: Fetch tags for modules
-        run: git fetch --tags origin '+refs/tags/${{ matrix.adapter }}/*:refs/tags/${{ matrix.adapter }}/*'
+        run: git fetch --tags origin '+refs/tags/${{ matrix.module }}/*:refs/tags/${{ matrix.module }}/*'
 
       - name: Files modified
         id: check
