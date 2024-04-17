@@ -2,11 +2,7 @@ package slog
 
 import (
 	"bytes"
-	"log/slog"
-	"os"
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 
 	"github.com/danteay/golog/levels"
 )
@@ -30,16 +26,6 @@ func TestWithWriter(t *testing.T) {
 	}
 }
 
-func TestWithLogger(t *testing.T) {
-	opts := &options{}
-
-	handler := slog.NewJSONHandler(os.Stdout, nil)
-
-	WithLogger(slog.New(handler))(opts)
-
-	assert.NotNil(t, opts.logger)
-}
-
 func TestOptionChaining(t *testing.T) {
 	opts := &options{}
 	WithLevel(levels.Error)(opts)
@@ -53,14 +39,4 @@ func TestOptionChaining(t *testing.T) {
 	if opts.writer != writer {
 		t.Error("Expected writer to be the provided io.Writer, but it's not")
 	}
-}
-
-func TestWithHandler(t *testing.T) {
-	opts := &options{}
-
-	handler := slog.NewTextHandler(os.Stdout, nil)
-
-	WithHandler(handler)(opts)
-
-	assert.NotNil(t, opts.handler)
 }

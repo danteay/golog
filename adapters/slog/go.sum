@@ -2,6 +2,8 @@ github.com/danteay/golog/fields v0.1.0 h1:/W3Gh3PrVoJsY53sear+yzyLRkIMkM039lOfSN
 github.com/danteay/golog/fields v0.1.0/go.mod h1:ACO2Sinx9OSYgwgUVTSZtWaT1q0VzHes6cDVgJtOS4Q=
 github.com/danteay/golog/levels v0.1.0 h1:vJqNEKlij90z6b7PSq6bqxmV9KbKn1tj8nlkASl0r14=
 github.com/danteay/golog/levels v0.1.0/go.mod h1:eWSbOC3D2TEvsl/Ngmyh1NngmX9ZNnywPTa5kVpN8Ew=
+github.com/danteay/golog/levels v0.1.1 h1:cG6KT6bdmfZ7I6Q4TKGtQu+/SK2SY9FJTYzC6JBjzZo=
+github.com/danteay/golog/levels v0.1.1/go.mod h1:eWSbOC3D2TEvsl/Ngmyh1NngmX9ZNnywPTa5kVpN8Ew=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
