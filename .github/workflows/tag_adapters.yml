@@ -34,10 +34,14 @@ jobs:
 
       - name: Files modified
         id: check
-        uses: tj-actions/changed-files@v26.1
-        with:
-          files: |
-            ./adapters/${{ matrix.adapter }}/*
+        run: |
+          any_changed="false"
+          
+          if git diff --name-only HEAD^ | grep -q "^adapters/${{ matrix.adapter }}/"; then
+              any_changed="true"
+          fi
+          
+          echo "any_changed=$any_changed" >> $GITHUB_OUTPUT
 
       - name: Config Git User
         if: steps.check.outputs.any_changed == 'true'
