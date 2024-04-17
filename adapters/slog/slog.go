@@ -47,6 +47,16 @@ func (a *Adapter) Writer() io.Writer {
 
 func (a *Adapter) SetWriter(w io.Writer) {
 	a.writer = w
+	a.logger = getSlogInstance(a.level, a.writer)
+}
+
+func (a *Adapter) Level() levels.Level {
+	return a.level
+}
+
+func (a *Adapter) SetLevel(level levels.Level) {
+	a.level = level
+	a.logger = getSlogInstance(level, a.writer)
 }
 
 // Logger returns the slog logger instance
