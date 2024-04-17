@@ -5,35 +5,51 @@ import (
 	"io"
 	"os"
 
-	"github.com/danteay/golog/fields"
-	"github.com/danteay/golog/levels"
 	"github.com/rs/zerolog"
+
+	"github.com/danteay/golog/fields"
+	"github.com/danteay/golog/internal/errors"
+	"github.com/danteay/golog/levels"
 )
 
 // Adapter is a zerolog adapter implementation
 type Adapter struct {
-	logger zerolog.Logger
+	logger    zerolog.Logger
+	level     levels.Level
+	writer    io.Writer
+	withTrace bool
 }
 
 func New(opts ...Option) *Adapter {
 	logOpts := options{
 		level:   levels.Info,
 		colored: false,
+		writer:  os.Stdout,
 	}
 
 	for _, opt := range opts {
 		opt(&logOpts)
 	}
 
-	if logOpts.logger != nil {
-		return &Adapter{
-			logger: *logOpts.logger,
-		}
+	adapter := &Adapter{
+		level:     logOpts.level,
+		writer:    getWriter(logOpts.writer, logOpts.colored),
+		withTrace: logOpts.withTrace,
 	}
 
-	return &Adapter{
-		logger: getLogger(logOpts),
-	}
+	adapter.logger = getLogger(adapter.level, adapter.writer)
+
+	return adapter
+}
+
+// Writer returns the writer for the adapter
+func (a *Adapter) Writer() io.Writer {
+	return a.writer
+}
+
+// SetWriter sets the writer for the adapter
+func (a *Adapter) SetWriter(w io.Writer) {
+	a.writer = w
 }
 
 // Logger returns the zerolog logger instance
@@ -45,9 +61,7 @@ func (a *Adapter) Logger() zerolog.Logger {
 func (a *Adapter) Log(level levels.Level, err error, logFields *fields.Fields, msg string, args ...any) {
 	log := a.getLog(level)
 
-	if err != nil {
-		log = log.Err(err)
-	}
+	addErrFields(level, err, log, a.withTrace)
 
 	if logFields != nil {
 		for k, v := range logFields.Data() {
@@ -76,14 +90,29 @@ func (a *Adapter) getLog(level levels.Level) *zerolog.Event {
 	return event()
 }
 
+func addErrFields(level levels.Level, err error, evt *zerolog.Event, withTrace bool) {
+	if err == nil {
+		return
+	}
+
+	evt.Err(err)
+
+	if withTrace || level == levels.TraceLevel {
+		evt.Interface("stack", errors.GetStackTrace())
+	}
+}
+
 func getLevels(level levels.Level) zerolog.Level {
 	levelList := map[levels.Level]zerolog.Level{
-		levels.Debug: zerolog.DebugLevel,
-		levels.Info:  zerolog.InfoLevel,
-		levels.Warn:  zerolog.WarnLevel,
-		levels.Error: zerolog.ErrorLevel,
-		levels.Fatal: zerolog.FatalLevel,
-		levels.Panic: zerolog.PanicLevel,
+		levels.NoLevel:    zerolog.NoLevel,
+		levels.Disabled:   zerolog.Disabled,
+		levels.TraceLevel: zerolog.TraceLevel,
+		levels.Debug:      zerolog.DebugLevel,
+		levels.Info:       zerolog.InfoLevel,
+		levels.Warn:       zerolog.WarnLevel,
+		levels.Error:      zerolog.ErrorLevel,
+		levels.Fatal:      zerolog.FatalLevel,
+		levels.Panic:      zerolog.PanicLevel,
 	}
 
 	zl, exists := levelList[level]
@@ -94,16 +123,17 @@ func getLevels(level levels.Level) zerolog.Level {
 	return zl
 }
 
-func getLogger(opts options) zerolog.Logger {
-	var writer io.Writer = os.Stdout
-
-	if opts.colored {
-		writer = zerolog.ConsoleWriter{Out: os.Stdout}
+func getWriter(baseWriter io.Writer, colored bool) io.Writer {
+	if colored {
+		return zerolog.ConsoleWriter{Out: baseWriter}
 	}
 
-	if opts.writer != nil {
-		writer = opts.writer
-	}
+	return baseWriter
+}
 
-	return zerolog.New(writer).With().Timestamp().Logger().Level(getLevels(opts.level))
+func getLogger(level levels.Level, writer io.Writer) zerolog.Logger {
+	return zerolog.New(writer).
+		With().Timestamp().
+		Logger().
+		Level(getLevels(level))
 }

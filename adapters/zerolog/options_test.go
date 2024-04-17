@@ -2,11 +2,7 @@ package zerolog
 
 import (
 	"bytes"
-	"os"
 	"testing"
-
-	"github.com/rs/zerolog"
-	"github.com/stretchr/testify/assert"
 
 	"github.com/danteay/golog/levels"
 )
@@ -37,13 +33,6 @@ func TestColored(t *testing.T) {
 	if !opts.colored {
 		t.Error("Expected colored to be true, but it's not")
 	}
-}
-
-func TestWithLogger(t *testing.T) {
-	opts := &options{}
-	WithLogger(zerolog.New(os.Stdout))(opts)
-
-	assert.NotNil(t, opts.logger)
 }
 
 func TestOptionChaining(t *testing.T) {
