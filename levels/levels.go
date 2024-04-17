@@ -45,7 +45,7 @@ const (
 	Panic
 )
 
-// String returns the string representation of the log level int.
+// String returns the string representation of the log level int
 func (l Level) String() string {
 	values := map[Level]string{
 		NoLevel:    "",
