@@ -5,18 +5,19 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/danteay/golog/adapters/zerolog"
+	"github.com/danteay/golog/adapters/slog"
 	"github.com/danteay/golog/internal/contextfields"
 	"github.com/danteay/golog/levels"
 )
 
 type testMsg struct {
 	Level   string   `json:"level"`
-	Message string   `json:"message"`
+	Message string   `json:"msg"`
 	Stack   []string `json:"stack"`
 	Error   string   `json:"error"`
 	Key1    string   `json:"key1"`
@@ -27,7 +28,7 @@ type testMsg struct {
 func TestNewLogger(t *testing.T) {
 	ctx := context.Background()
 
-	adapter := zerolog.New()
+	adapter := slog.New()
 	logger := New(WithAdapter(adapter)).SetContext(ctx)
 
 	assert.IsType(t, &Logger{}, logger)
@@ -71,7 +72,7 @@ func TestLoggerLog(t *testing.T) {
 	t.Run("Test log message", func(t *testing.T) {
 		var logOutput bytes.Buffer
 
-		adapter := zerolog.New(zerolog.WithWriter(&logOutput), zerolog.WithLevel(levels.Debug))
+		adapter := slog.New(slog.WithWriter(&logOutput), slog.WithLevel(levels.Debug))
 		logger := New(WithAdapter(adapter)).SetContext(context.Background())
 
 		level := levels.Debug
@@ -94,7 +95,7 @@ func TestLoggerLog(t *testing.T) {
 			t.Fatal(errMarshal)
 		}
 
-		assert.Equal(t, level.String(), res.Level)
+		assert.Equal(t, level.String(), strings.ToLower(res.Level))
 		assert.Equal(t, msg, res.Message)
 		assert.Equal(t, err.Error(), res.Error)
 		assert.Equal(t, fields["key1"], res.Key1)
@@ -107,7 +108,7 @@ func TestLoggerLog(t *testing.T) {
 		var logOutput bytes.Buffer
 
 		ctx := context.WithValue(context.Background(), contextfields.ExecutionContextKey, "some-exec-id")
-		adapter := zerolog.New(zerolog.WithWriter(&logOutput), zerolog.WithLevel(levels.Debug))
+		adapter := slog.New(slog.WithWriter(&logOutput), slog.WithLevel(levels.Debug))
 		logger := New(WithAdapter(adapter)).SetContext(ctx)
 		defer logger.FlushContextFields()
 
@@ -136,7 +137,7 @@ func TestLoggerLog(t *testing.T) {
 			t.Fatal(errMarshal)
 		}
 
-		assert.Equal(t, level.String(), res.Level)
+		assert.Equal(t, level.String(), strings.ToLower(res.Level))
 		assert.Equal(t, msg, res.Message)
 		assert.Equal(t, err.Error(), res.Error)
 		assert.Equal(t, fields["key1"], res.Key1)
@@ -154,7 +155,7 @@ func TestLoggerLog(t *testing.T) {
 			t.Fatal(errMarshal)
 		}
 
-		assert.Equal(t, level.String(), res.Level)
+		assert.Equal(t, level.String(), strings.ToLower(res.Level))
 		assert.Equal(t, msg, res.Message)
 		assert.Equal(t, "", res.Error)
 		assert.Equal(t, "", res.Key1)

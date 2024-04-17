@@ -11,8 +11,12 @@ import (
 func PreCommit() {
 	preCommit := sh.OutCmd("pre-commit")
 
-	out, _ := preCommit("install", "--hook-type", "commit-msg")
+	out, _ := preCommit("install")
 	fmt.Println(out)
+
+	out, _ = preCommit("install", "--hook-type", "commit-msg")
+	fmt.Println(out)
+
 }
 
 // Install install dependencies

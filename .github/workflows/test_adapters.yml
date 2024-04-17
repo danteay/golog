@@ -1,0 +1,35 @@
+name: Test adapters
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        adapter:
+          - slog
+          - zerolog
+        go-version:
+          - 1.21.x
+          - 1.22.x
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Golang with cache
+        uses: magnetikonline/action-golang-cache@v5
+        with:
+          go-version: ${{ matrix.go-version }}
+
+      - name: Install dependencies
+        working-directory: adapters/${{ matrix.adapter }}
+        run: go mod download
+
+      - name: Run tests
+        working-directory: adapters/${{ matrix.adapter }}
+        run: go test -v github.com/danteay/golog/adapters/${{ matrix.adapter }}
