@@ -3,7 +3,7 @@ module github.com/danteay/golog
 go 1.21
 
 require (
-	github.com/danteay/golog/adapters/slog v0.2.0
+	github.com/danteay/golog/adapters/slog v0.2.1
 	github.com/danteay/golog/fields v0.1.0
 	github.com/danteay/golog/levels v0.1.0
 	github.com/stretchr/testify v1.9.0

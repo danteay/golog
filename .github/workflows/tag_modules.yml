@@ -26,16 +26,22 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
-          token: "${{ secrets.ACCESS_TOKEN }}"
+          fetch-depth: 2
           ref: "main"
+
+      - name: Fetch tags for adapter
+        run: git fetch --tags origin '+refs/tags/adapters/${{ matrix.adapter }}/*:refs/tags/adapters/${{ matrix.adapter }}/*'
 
       - name: Files modified
         id: check
-        uses: tj-actions/changed-files@v26.1
-        with:
-          files: |
-            ./${{ matrix.module }}/**
+        run: |
+          any_changed="false"
+
+          if git diff --name-only HEAD^ | grep -q "^${{ matrix.module }}/"; then
+              any_changed="true"
+          fi
+
+          echo "any_changed=$any_changed" >> $GITHUB_OUTPUT
 
       - name: Config Git User
         if: steps.check.outputs.any_changed == 'true'
