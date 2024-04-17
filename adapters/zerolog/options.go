@@ -3,16 +3,14 @@ package zerolog
 import (
 	"io"
 
-	"github.com/rs/zerolog"
-
 	"github.com/danteay/golog/levels"
 )
 
 type options struct {
-	level   levels.Level
-	writer  io.Writer
-	colored bool
-	logger  *zerolog.Logger
+	level     levels.Level
+	writer    io.Writer
+	colored   bool
+	withTrace bool
 }
 
 // Option defines the signature for the options.
@@ -39,9 +37,9 @@ func Colored() Option {
 	}
 }
 
-// WithLogger sets the logger for the adapter.
-func WithLogger(logger zerolog.Logger) Option {
+// WithTrace sets the error trace for the logger.
+func WithTrace() Option {
 	return func(opts *options) {
-		opts.logger = &logger
+		opts.withTrace = true
 	}
 }

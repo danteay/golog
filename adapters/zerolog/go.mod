@@ -4,7 +4,7 @@ go 1.21
 
 require (
 	github.com/danteay/golog/fields v0.1.0
-	github.com/danteay/golog/levels v0.1.0
+	github.com/danteay/golog/levels v0.1.1
 	github.com/rs/zerolog v1.32.0
 	github.com/stretchr/testify v1.9.0
 )
