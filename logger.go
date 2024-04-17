@@ -7,7 +7,6 @@ import (
 	"github.com/danteay/golog/adapters/slog"
 	"github.com/danteay/golog/fields"
 	"github.com/danteay/golog/internal/contextfields"
-	"github.com/danteay/golog/internal/errors"
 	"github.com/danteay/golog/levels"
 )
 
@@ -16,6 +15,8 @@ type Adapter interface {
 	Log(level levels.Level, err error, logFields *fields.Fields, msg string, args ...any)
 	Writer() io.Writer
 	SetWriter(w io.Writer)
+	Level() levels.Level
+	SetLevel(level levels.Level)
 }
 
 // Logger is the main struct that holds the logger instance.
@@ -89,58 +90,27 @@ func (l *Logger) Err(err error) *Logger {
 	return l
 }
 
+// Write user the writer configured o the adapter to write the logs.
 func (l *Logger) Write(p []byte) (n int, err error) {
 	return l.logger.Writer().Write(p)
 }
 
-// Log logs a message with the provided level, message and arguments.
-func (l *Logger) Log(level levels.Level, msg string, args ...any) {
-	defer l.reset()
-
-	if level <= levels.Disabled {
-		return
-	}
-
-	l.fields.Merge(contextfields.Fields(l.ctx))
-
-	if l.err != nil {
-		l.fields.Set("stack", errors.GetStackTrace())
-	}
-
-	l.logger.Log(level, l.err, l.fields, msg, args...)
+// Writer returns the writer for the adapter instance.
+func (l *Logger) Writer() io.Writer {
+	return l.logger.Writer()
 }
 
-// Debug logs a message with the Debug level.
-func (l *Logger) Debug(msg string, args ...any) {
-	l.Log(levels.Debug, msg, args...)
+// SetWriter sets the writer for the adapter instance.
+func (l *Logger) SetWriter(w io.Writer) {
+	l.logger.SetWriter(w)
 }
 
-// Info logs a message with the Info level.
-func (l *Logger) Info(msg string, args ...any) {
-	l.Log(levels.Info, msg, args...)
+// Level returns the level for the adapter instance.
+func (l *Logger) Level() levels.Level {
+	return l.logger.Level()
 }
 
-// Warn logs a message with the Warn level.
-func (l *Logger) Warn(msg string, args ...any) {
-	l.Log(levels.Warn, msg, args...)
-}
-
-// Error logs a message with the Error level.
-func (l *Logger) Error(msg string, args ...any) {
-	l.Log(levels.Error, msg, args...)
-}
-
-// Fatal logs a message with the Fatal level.
-func (l *Logger) Fatal(msg string, args ...any) {
-	l.Log(levels.Fatal, msg, args...)
-}
-
-// Panic logs a message with the Panic level.
-func (l *Logger) Panic(msg string, args ...any) {
-	l.Log(levels.Panic, msg, args...)
-}
-
-func (l *Logger) reset() {
-	l.fields = fields.New()
-	l.err = nil
+// SetLevel sets the level for the adapter instance.
+func (l *Logger) SetLevel(level levels.Level) {
+	l.logger.SetLevel(level)
 }
