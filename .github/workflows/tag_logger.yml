@@ -35,26 +35,26 @@ jobs:
             ./go.mod
             ./go.sum
 
-      - name: Should skip
-        if: steps.check.outputs.any_changed != 'true'
-        run: exit 78
-
       - name: Config Git User
+        if: steps.check.outputs.any_changed == 'true'
         run: |
           git config --local user.email "$GIT_USER_EMAIL"
           git config --local user.name "$GIT_USER_NAME"
           git config --local pull.ff only
 
       - name: Setup Python
+        if: steps.check.outputs.any_changed == 'true'
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
       - name: Install commitizen
+        if: steps.check.outputs.any_changed == 'true'
         run: pip install -U commitizen
 
       - id: cz
         name: Create bump and changelog
+        if: steps.check.outputs.any_changed == 'true'
         working-directory: ${{ matrix.module }}
         run: |
           python -m pip install -U commitizen
@@ -63,6 +63,7 @@ jobs:
           echo "version=$REV" >> $GITHUB_OUTPUT
 
       - name: Push changes
+        if: steps.check.outputs.any_changed == 'true'
         uses: Woile/github-push-action@master
         with:
           github_token: ${{ secrets.ACCESS_TOKEN }}
@@ -70,4 +71,5 @@ jobs:
           branch: "main"
 
       - name: Print Version
+        if: steps.check.outputs.any_changed == 'true'
         run: echo "Bumped to version ${{ steps.cz.outputs.version }}"

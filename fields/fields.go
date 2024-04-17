@@ -1,12 +1,15 @@
 package fields
 
-import "sync"
+import (
+	"sync"
+)
 
 type Fields struct {
 	mutex *sync.Mutex
 	data  map[string]any
 }
 
+// New creates a new Fields instance
 func New() *Fields {
 	return &Fields{
 		mutex: &sync.Mutex{},
