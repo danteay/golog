@@ -1,6 +1,8 @@
 package levels
 
-import "strconv"
+import (
+	"strconv"
+)
 
 var (
 	// TraceValue is the value used for the trace level field.
@@ -24,7 +26,7 @@ type Level int8
 
 const (
 	// Debug defines debug log level.
-	Debug Level = iota
+	Debug Level = iota + 1
 	// Info defines info log level.
 	Info
 	// Warn defines warn log level.

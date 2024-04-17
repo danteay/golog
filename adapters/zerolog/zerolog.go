@@ -5,9 +5,10 @@ import (
 	"io"
 	"os"
 
+	"github.com/rs/zerolog"
+
 	"github.com/danteay/golog/fields"
 	"github.com/danteay/golog/levels"
-	"github.com/rs/zerolog"
 )
 
 type Adapter struct {
