@@ -1,6 +1,6 @@
 [tool.commitizen]
 name = "cz_customize"
-version = "0.1.0"
+version = "0.1.1"
 tag_format = "levels/v$version"
 
 [tool.commitizen.customize]
