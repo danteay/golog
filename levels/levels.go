@@ -45,6 +45,7 @@ const (
 	// Values less than TraceLevel are handled as numbers.
 )
 
+// String returns the string representation of the log level.
 func (l Level) String() string {
 	values := map[Level]string{
 		TraceLevel: TraceValue,

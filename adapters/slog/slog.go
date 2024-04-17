@@ -8,6 +8,7 @@ import (
 	"os"
 )
 
+// Adapter is an slog adapter implementation
 type Adapter struct {
 	logger *slog.Logger
 }
@@ -33,10 +34,12 @@ func New(opts ...Option) *Adapter {
 	}
 }
 
+// Logger returns the slog logger instance
 func (a *Adapter) Logger() *slog.Logger {
 	return a.logger
 }
 
+// Log logs a message with the given level, error, fields, and message
 func (a *Adapter) Log(level levels.Level, err error, logFields *fields.Fields, msg string, args ...any) {
 	lenFields := 0
 	if logFields != nil {

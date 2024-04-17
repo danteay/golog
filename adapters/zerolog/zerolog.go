@@ -5,10 +5,9 @@ import (
 	"io"
 	"os"
 
-	"github.com/rs/zerolog"
-
 	"github.com/danteay/golog/fields"
 	"github.com/danteay/golog/levels"
+	"github.com/rs/zerolog"
 )
 
 type Adapter struct {
@@ -36,10 +35,12 @@ func New(opts ...Option) *Adapter {
 	}
 }
 
+// Logger returns the zerolog logger instance
 func (a *Adapter) Logger() zerolog.Logger {
 	return a.logger
 }
 
+// Log logs a message with the given level, error, fields, and message
 func (a *Adapter) Log(level levels.Level, err error, logFields *fields.Fields, msg string, args ...any) {
 	log := a.getLog(level)
 
