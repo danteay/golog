@@ -15,6 +15,7 @@ type Adapter interface {
 	Log(level levels.Level, err error, logFields *fields.Fields, msg string, args ...any)
 }
 
+// Logger is the main struct that holds the logger instance.
 type Logger struct {
 	ctx    context.Context
 	logger Adapter
