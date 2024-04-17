@@ -15,11 +15,12 @@ import (
 )
 
 type testMsg struct {
-	Level   string `json:"level"`
-	Message string `json:"msg"`
-	Error   string `json:"error"`
-	Key1    string `json:"key1"`
-	Key2    int    `json:"key2"`
+	Level   string   `json:"level"`
+	Message string   `json:"msg"`
+	Error   string   `json:"error"`
+	Key1    string   `json:"key1"`
+	Key2    int      `json:"key2"`
+	Stack   []string `json:"stack"`
 }
 
 func TestAdapter_Log(t *testing.T) {
@@ -134,6 +135,98 @@ func TestAdapter_Log(t *testing.T) {
 
 		logger.Log(levels.Debug, err, logFields, msg)
 
+		assert.Equal(t, "", logOutput.String())
+	})
+
+	t.Run("should log message with trace", func(t *testing.T) {
+		var logOutput bytes.Buffer
+
+		logger := New(WithLevel(levels.TraceLevel), WithWriter(&logOutput), WithTrace())
+
+		logFields := fields.New().SetMap(map[string]any{
+			"key1": "value1",
+			"key2": 42,
+		})
+
+		msg := "Test message"
+		err := errors.New("test error")
+
+		logger.Log(levels.Debug, err, logFields, msg)
+
+		res := testMsg{}
+
+		if errUnmarshall := json.Unmarshal(logOutput.Bytes(), &res); errUnmarshall != nil {
+			t.Fatal(errUnmarshall)
+		}
+
+		assert.Equal(t, levels.Debug.String(), strings.ToLower(res.Level))
+		assert.Equal(t, msg, res.Message)
+		assert.Equal(t, logFields.Get("key1"), res.Key1)
+		assert.Equal(t, logFields.Get("key2"), res.Key2)
+		assert.Equal(t, err.Error(), res.Error)
+		assert.NotEmpty(t, res.Stack)
+	})
+
+	t.Run("should change level", func(t *testing.T) {
+		var logOutput bytes.Buffer
+
+		logger := New(WithLevel(levels.Info), WithWriter(&logOutput))
+
+		logFields := fields.New().SetMap(map[string]any{
+			"key1": "value1",
+			"key2": 42,
+		})
+
+		msg := "Test message"
+		err := errors.New("test error")
+
+		logger.Log(levels.Debug, err, logFields, msg)
+
+		assert.Equal(t, "", logOutput.String())
+
+		logger.SetLevel(levels.Debug)
+
+		logger.Log(levels.Debug, err, logFields, msg)
+
+		res := testMsg{}
+
+		if errUnmarshall := json.Unmarshal(logOutput.Bytes(), &res); errUnmarshall != nil {
+			t.Fatal(errUnmarshall)
+		}
+
+		assert.Equal(t, levels.Debug.String(), strings.ToLower(res.Level))
+		assert.Equal(t, msg, res.Message)
+		assert.Equal(t, logFields.Get("key1"), res.Key1)
+		assert.Equal(t, logFields.Get("key2"), res.Key2)
+		assert.Equal(t, err.Error(), res.Error)
+	})
+
+	t.Run("should change writer", func(t *testing.T) {
+		var logOutput bytes.Buffer
+
+		logger := New(WithLevel(levels.Debug), WithWriter(&logOutput))
+
+		logFields := fields.New().SetMap(map[string]any{
+			"key1": "value1",
+			"key2": 42,
+		})
+
+		msg := "Test message"
+		err := errors.New("test error")
+
+		logger.Log(levels.Debug, err, logFields, msg)
+
+		assert.NotEqual(t, "", logOutput.String())
+
+		logOutput.Reset()
+
+		var newLogOutput bytes.Buffer
+
+		logger.SetWriter(&newLogOutput)
+
+		logger.Log(levels.Debug, err, logFields, msg)
+
+		assert.NotEqual(t, "", newLogOutput.String())
 		assert.Equal(t, "", logOutput.String())
 	})
 }
