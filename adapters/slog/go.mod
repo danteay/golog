@@ -2,14 +2,9 @@ module github.com/danteay/golog/adapters/slog
 
 go 1.21
 
-replace (
-	github.com/danteay/golog/fields => ../../fields
-	github.com/danteay/golog/levels => ../../levels
-)
-
 require (
-	github.com/danteay/golog/fields v0.0.0
-	github.com/danteay/golog/levels v0.0.0
+	github.com/danteay/golog/fields v0.1.0
+	github.com/danteay/golog/levels v0.1.0
 	github.com/stretchr/testify v1.9.0
 )
 
