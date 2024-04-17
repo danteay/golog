@@ -26,7 +26,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
           token: "${{ secrets.ACCESS_TOKEN }}"
           ref: "main"
 
@@ -56,7 +55,7 @@ jobs:
 
       - name: Pull changes
         if: steps.check.outputs.any_changed == 'true'
-        run: git fetch origin --tags
+        run: git fetch --tags origin '+refs/tags/adapters/${{ matrix.adapter }}/*:refs/tags/adapters/${{ matrix.adapter }}/*'
 
       - id: cz
         name: Create bump and changelog
