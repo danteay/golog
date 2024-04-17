@@ -10,6 +10,7 @@ import (
 	"github.com/danteay/golog/levels"
 )
 
+// Adapter is the interface that wraps the Log method.
 type Adapter interface {
 	Log(level levels.Level, err error, logFields *fields.Fields, msg string, args ...any)
 }
@@ -39,6 +40,7 @@ func New(opts ...Option) *Logger {
 	}
 }
 
+// SetContext sets the context to be used in the logger instance to identify and group log fields by execution
 func (l *Logger) SetContext(ctx context.Context) *Logger {
 	if ctx == nil {
 		return l

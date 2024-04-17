@@ -14,6 +14,7 @@ func New() *Fields {
 	}
 }
 
+// Set sets a key-value pair in the fields
 func (f *Fields) Set(key string, value any) *Fields {
 	f.mutex.Lock()
 	defer f.mutex.Unlock()
@@ -23,6 +24,7 @@ func (f *Fields) Set(key string, value any) *Fields {
 	return f
 }
 
+// SetMap sets a map of key-value pairs in the fields
 func (f *Fields) SetMap(fields map[string]any) *Fields {
 	f.mutex.Lock()
 	defer f.mutex.Unlock()
@@ -34,6 +36,7 @@ func (f *Fields) SetMap(fields map[string]any) *Fields {
 	return f
 }
 
+// Get returns the value of a key in the fields
 func (f *Fields) Get(key string) any {
 	f.mutex.Lock()
 	defer f.mutex.Unlock()
@@ -41,6 +44,7 @@ func (f *Fields) Get(key string) any {
 	return f.data[key]
 }
 
+// Delete removes a key from the fields
 func (f *Fields) Delete(key string) *Fields {
 	f.mutex.Lock()
 	defer f.mutex.Unlock()
@@ -50,6 +54,7 @@ func (f *Fields) Delete(key string) *Fields {
 	return f
 }
 
+// Clear removes all keys from the fields
 func (f *Fields) Clear() *Fields {
 	f.mutex.Lock()
 	defer f.mutex.Unlock()
@@ -59,6 +64,7 @@ func (f *Fields) Clear() *Fields {
 	return f
 }
 
+// Copy returns a copy of the fields
 func (f *Fields) Copy() *Fields {
 	f.mutex.Lock()
 	defer f.mutex.Unlock()
@@ -74,6 +80,7 @@ func (f *Fields) Copy() *Fields {
 	}
 }
 
+// Merge merges the fields with another fields
 func (f *Fields) Merge(fields *Fields) *Fields {
 	f.mutex.Lock()
 	defer f.mutex.Unlock()
@@ -89,6 +96,7 @@ func (f *Fields) Merge(fields *Fields) *Fields {
 	return f
 }
 
+// Len returns the number of keys in the fields
 func (f *Fields) Len() int {
 	f.mutex.Lock()
 	defer f.mutex.Unlock()
@@ -96,6 +104,7 @@ func (f *Fields) Len() int {
 	return len(f.data)
 }
 
+// IsEmpty returns true if the fields are empty
 func (f *Fields) IsEmpty() bool {
 	f.mutex.Lock()
 	defer f.mutex.Unlock()
@@ -103,6 +112,7 @@ func (f *Fields) IsEmpty() bool {
 	return len(f.data) == 0
 }
 
+// Data returns the fields as a map
 func (f *Fields) Data() map[string]any {
 	f.mutex.Lock()
 	defer f.mutex.Unlock()
