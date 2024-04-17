@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"io"
 	"os"
-
-	"github.com/rs/zerolog"
+	"runtime/debug"
+	"strings"
 
 	"github.com/danteay/golog/fields"
-	"github.com/danteay/golog/internal/errors"
 	"github.com/danteay/golog/levels"
+	"github.com/rs/zerolog"
 )
 
 // Adapter is a zerolog adapter implementation
@@ -98,8 +98,13 @@ func addErrFields(level levels.Level, err error, evt *zerolog.Event, withTrace b
 	evt.Err(err)
 
 	if withTrace || level == levels.TraceLevel {
-		evt.Interface("stack", errors.GetStackTrace())
+		evt.Interface("stack", getStackTrace())
 	}
+}
+
+func getStackTrace() []string {
+	stack := strings.ReplaceAll(string(debug.Stack()), "\t", "")
+	return strings.Split(stack, "\n")
 }
 
 func getLevels(level levels.Level) zerolog.Level {
