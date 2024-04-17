@@ -25,8 +25,14 @@ var (
 type Level int8
 
 const (
+	// NoLevel defines an absent log level.
+	NoLevel Level = iota + 1
+	// Disabled disables the logger.
+	Disabled
+	// TraceLevel defines trace log level.
+	TraceLevel
 	// Debug defines debug log level.
-	Debug Level = iota + 1
+	Debug
 	// Info defines info log level.
 	Info
 	// Warn defines warn log level.
@@ -37,19 +43,13 @@ const (
 	Fatal
 	// Panic defines panic log level.
 	Panic
-	// NoLevel defines an absent log level.
-	NoLevel
-	// Disabled disables the logger.
-	Disabled
-
-	// TraceLevel defines trace log level.
-	TraceLevel Level = -1
-	// Values less than TraceLevel are handled as numbers.
 )
 
 // String returns the string representation of the log level int.
 func (l Level) String() string {
 	values := map[Level]string{
+		NoLevel:    "",
+		Disabled:   "disabled",
 		TraceLevel: TraceValue,
 		Debug:      DebugValue,
 		Info:       InfoValue,
@@ -57,8 +57,6 @@ func (l Level) String() string {
 		Error:      ErrorValue,
 		Fatal:      FatalValue,
 		Panic:      PanicValue,
-		Disabled:   "disabled",
-		NoLevel:    "",
 	}
 
 	if value, exists := values[l]; exists {
