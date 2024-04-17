@@ -63,7 +63,8 @@ func TestLoggerErr(t *testing.T) {
 	if logger.err == nil {
 		t.Error("Expected logger error to be non-nil, but it's nil")
 	}
-	if logger.err != err {
+
+	if !errors.Is(err, logger.err) {
 		t.Errorf("Expected logger error to be %v, but got %v", err, logger.err)
 	}
 }

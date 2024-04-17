@@ -1,5 +1,5 @@
-github.com/danteay/golog/adapters/slog v0.3.1 h1:lwR4WafzK8TV5ppAT/YYRzVEqEDl7R2J2z0MWuS+Lrc=
-github.com/danteay/golog/adapters/slog v0.3.1/go.mod h1:5UJ4IY36TkpfHMjatweHLsbv+v1uHPnNWwrNEyngLWY=
+github.com/danteay/golog/adapters/slog v0.4.0 h1:55g/g0EdDFR1mTmYfGeNh1hbEko7THQSSiNbBhxEsOQ=
+github.com/danteay/golog/adapters/slog v0.4.0/go.mod h1:5UJ4IY36TkpfHMjatweHLsbv+v1uHPnNWwrNEyngLWY=
 github.com/danteay/golog/fields v0.1.0 h1:/W3Gh3PrVoJsY53sear+yzyLRkIMkM039lOfSNfUFj0=
 github.com/danteay/golog/fields v0.1.0/go.mod h1:ACO2Sinx9OSYgwgUVTSZtWaT1q0VzHes6cDVgJtOS4Q=
 github.com/danteay/golog/levels v0.1.1 h1:cG6KT6bdmfZ7I6Q4TKGtQu+/SK2SY9FJTYzC6JBjzZo=
