@@ -54,3 +54,13 @@ func TestOptionChaining(t *testing.T) {
 		t.Error("Expected writer to be the provided io.Writer, but it's not")
 	}
 }
+
+func TestWithHandler(t *testing.T) {
+	opts := &options{}
+
+	handler := slog.NewTextHandler(os.Stdout, nil)
+
+	WithHandler(handler)(opts)
+
+	assert.NotNil(t, opts.handler)
+}

@@ -26,17 +26,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          token: "${{ secrets.ACCESS_TOKEN }}"
+          fetch-depth: 2
           ref: "main"
+
+      - name: Fetch tags for adapter
+        run: git fetch --tags origin '+refs/tags/adapters/${{ matrix.adapter }}/*:refs/tags/adapters/${{ matrix.adapter }}/*'
 
       - name: Files modified
         id: check
         uses: tj-actions/changed-files@v26.1
         with:
           files: |
-            ./adapters/${{ matrix.adapter }}/**/*.go
-            ./adapters/${{ matrix.adapter }}/go.mod
-            ./adapters/${{ matrix.adapter }}/go.sum
+            ./adapters/${{ matrix.adapter }}/*
 
       - name: Config Git User
         if: steps.check.outputs.any_changed == 'true'
@@ -54,10 +55,6 @@ jobs:
       - name: Install commitizen
         if: steps.check.outputs.any_changed == 'true'
         run: pip install -U commitizen
-
-      - name: Pull changes
-        if: steps.check.outputs.any_changed == 'true'
-        run: git fetch --tags origin '+refs/tags/adapters/${{ matrix.adapter }}/*:refs/tags/adapters/${{ matrix.adapter }}/*'
 
       - id: cz
         name: Create bump and changelog

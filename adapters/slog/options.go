@@ -8,9 +8,10 @@ import (
 )
 
 type options struct {
-	level  levels.Level
-	writer io.Writer
-	logger *slog.Logger
+	level   levels.Level
+	writer  io.Writer
+	logger  *slog.Logger
+	handler slog.Handler
 }
 
 type Option func(*options)
@@ -33,5 +34,12 @@ func WithWriter(writer io.Writer) Option {
 func WithLogger(logger *slog.Logger) Option {
 	return func(opts *options) {
 		opts.logger = logger
+	}
+}
+
+// WithHandler sets the handler for the logger. If a handler is set, the writer and level options will be ignored.
+func WithHandler(handler slog.Handler) Option {
+	return func(opts *options) {
+		opts.handler = handler
 	}
 }
