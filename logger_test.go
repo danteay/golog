@@ -8,10 +8,11 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
+
 	"github.com/danteay/golog/adapters/slog"
 	"github.com/danteay/golog/internal/contextfields"
 	"github.com/danteay/golog/levels"
-	"github.com/stretchr/testify/assert"
 )
 
 type testMsg struct {

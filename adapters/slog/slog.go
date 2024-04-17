@@ -2,10 +2,11 @@ package slog
 
 import (
 	"fmt"
-	"github.com/danteay/golog/fields"
-	"github.com/danteay/golog/levels"
 	"log/slog"
 	"os"
+
+	"github.com/danteay/golog/fields"
+	"github.com/danteay/golog/levels"
 )
 
 // Adapter is an slog adapter implementation
