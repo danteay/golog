@@ -14,11 +14,12 @@ import (
 )
 
 type testMsg struct {
-	Level   string `json:"level"`
-	Message string `json:"message"`
-	Error   string `json:"error"`
-	Key1    string `json:"key1"`
-	Key2    int    `json:"key2"`
+	Level   string   `json:"level"`
+	Message string   `json:"message"`
+	Error   string   `json:"error"`
+	Key1    string   `json:"key1"`
+	Key2    int      `json:"key2"`
+	Stack   []string `json:"stack"`
 }
 
 func TestAdapter_Log(t *testing.T) {
@@ -133,6 +134,65 @@ func TestAdapter_Log(t *testing.T) {
 
 		logger.Log(levels.Debug, err, logFields, msg)
 
+		assert.Equal(t, "", logOutput.String())
+	})
+
+	t.Run("should log message with error and stack trace", func(t *testing.T) {
+		var logOutput bytes.Buffer
+
+		logger := New(WithLevel(levels.TraceLevel), WithWriter(&logOutput))
+
+		msg := "Test message"
+		err := errors.New("test error")
+
+		logger.Log(levels.TraceLevel, err, nil, msg)
+
+		res := testMsg{}
+
+		if errUnmarshall := json.Unmarshal(logOutput.Bytes(), &res); errUnmarshall != nil {
+			t.Fatal(errUnmarshall)
+		}
+
+		assert.Equal(t, levels.TraceLevel.String(), res.Level)
+		assert.Equal(t, msg, res.Message)
+		assert.Equal(t, err.Error(), res.Error)
+		assert.NotEmpty(t, res.Stack)
+	})
+
+	t.Run("should change level", func(t *testing.T) {
+		var logOutput bytes.Buffer
+
+		logger := New(WithLevel(levels.Info), WithWriter(&logOutput))
+
+		logger.Log(levels.Debug, nil, nil, "Test message")
+
+		assert.Equal(t, "", logOutput.String())
+
+		logger.SetLevel(levels.Debug)
+
+		logger.Log(levels.Debug, nil, nil, "Test message")
+
+		assert.NotEqual(t, "", logOutput.String())
+	})
+
+	t.Run("should change writer", func(t *testing.T) {
+		var logOutput bytes.Buffer
+
+		logger := New(WithLevel(levels.Debug), WithWriter(&logOutput))
+
+		logger.Log(levels.Debug, nil, nil, "Test message")
+
+		assert.NotEqual(t, "", logOutput.String())
+
+		logOutput.Reset()
+
+		var newOutput bytes.Buffer
+
+		logger.SetWriter(&newOutput)
+
+		logger.Log(levels.Debug, nil, nil, "Test message")
+
+		assert.NotEqual(t, "", newOutput.String())
 		assert.Equal(t, "", logOutput.String())
 	})
 }
