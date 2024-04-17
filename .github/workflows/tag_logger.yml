@@ -5,6 +5,13 @@ on:
     branches:
       - main
 
+permissions:
+  contents: write
+
+env:
+  GIT_USER_EMAIL: ${{ secrets.GIT_EMAIL }}
+  GIT_USER_NAME: ${{ secrets.GIT_NAME }}
+
 jobs:
   tag_adapter:
     if: "!startsWith(github.event.head_commit.message, 'bump:')"
@@ -31,6 +38,12 @@ jobs:
       - name: Should skip
         if: steps.check.outputs.any_changed != 'true'
         run: exit 78
+
+      - name: Config Git User
+        run: |
+          git config --local user.email "$GIT_USER_EMAIL"
+          git config --local user.name "$GIT_USER_NAME"
+          git config --local pull.ff only
 
       - name: Setup Python
         uses: actions/setup-python@v5
