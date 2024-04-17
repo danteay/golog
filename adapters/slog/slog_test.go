@@ -8,9 +8,10 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
+
 	"github.com/danteay/golog/fields"
 	"github.com/danteay/golog/levels"
-	"github.com/stretchr/testify/assert"
 )
 
 type testMsg struct {
@@ -139,12 +140,15 @@ func TestAdapter_Log(t *testing.T) {
 
 func TestGetLevels(t *testing.T) {
 	tests := map[levels.Level]slog.Level{
-		levels.Debug: slog.LevelDebug,
-		levels.Info:  slog.LevelInfo,
-		levels.Warn:  slog.LevelWarn,
-		levels.Error: slog.LevelError,
-		levels.Fatal: slog.LevelError,
-		levels.Panic: slog.LevelError,
+		levels.NoLevel:    slog.LevelInfo,
+		levels.Disabled:   slog.LevelInfo,
+		levels.TraceLevel: slog.LevelDebug,
+		levels.Debug:      slog.LevelDebug,
+		levels.Info:       slog.LevelInfo,
+		levels.Warn:       slog.LevelWarn,
+		levels.Error:      slog.LevelError,
+		levels.Fatal:      slog.LevelError,
+		levels.Panic:      slog.LevelError,
 	}
 
 	for level, expected := range tests {

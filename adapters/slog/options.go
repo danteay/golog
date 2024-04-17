@@ -2,16 +2,14 @@ package slog
 
 import (
 	"io"
-	"log/slog"
 
 	"github.com/danteay/golog/levels"
 )
 
 type options struct {
-	level   levels.Level
-	writer  io.Writer
-	logger  *slog.Logger
-	handler slog.Handler
+	level     levels.Level
+	writer    io.Writer
+	withTrace bool
 }
 
 // Option defines the signature for the options.
@@ -31,16 +29,9 @@ func WithWriter(writer io.Writer) Option {
 	}
 }
 
-// WithLogger sets the logger for the adapter.
-func WithLogger(logger *slog.Logger) Option {
+// WithTrace sets the error trace for the logger.
+func WithTrace() Option {
 	return func(opts *options) {
-		opts.logger = logger
-	}
-}
-
-// WithHandler sets the handler for the logger. If a handler is set, the writer and level options will be ignored.
-func WithHandler(handler slog.Handler) Option {
-	return func(opts *options) {
-		opts.handler = handler
+		opts.withTrace = true
 	}
 }

@@ -2,16 +2,21 @@ package slog
 
 import (
 	"fmt"
+	"io"
 	"log/slog"
 	"os"
 
 	"github.com/danteay/golog/fields"
+	"github.com/danteay/golog/internal/errors"
 	"github.com/danteay/golog/levels"
 )
 
-// Adapter is an slog adapter implementation
+// Adapter is a slog adapter implementation
 type Adapter struct {
-	logger *slog.Logger
+	logger    *slog.Logger
+	level     levels.Level
+	writer    io.Writer
+	withTrace bool
 }
 
 func New(opts ...Option) *Adapter {
@@ -24,15 +29,23 @@ func New(opts ...Option) *Adapter {
 		opt(&logOpts)
 	}
 
-	if logOpts.logger != nil {
-		return &Adapter{
-			logger: logOpts.logger,
-		}
+	adapter := &Adapter{
+		writer:    logOpts.writer,
+		withTrace: logOpts.withTrace,
+		level:     logOpts.level,
 	}
 
-	return &Adapter{
-		logger: getSlogInstance(logOpts),
-	}
+	adapter.logger = getSlogInstance(adapter.level, adapter.writer)
+
+	return adapter
+}
+
+func (a *Adapter) Writer() io.Writer {
+	return a.writer
+}
+
+func (a *Adapter) SetWriter(w io.Writer) {
+	a.writer = w
 }
 
 // Logger returns the slog logger instance
@@ -42,6 +55,10 @@ func (a *Adapter) Logger() *slog.Logger {
 
 // Log logs a message with the given level, error, fields, and message
 func (a *Adapter) Log(level levels.Level, err error, logFields *fields.Fields, msg string, args ...any) {
+	if level <= levels.Disabled {
+		return
+	}
+
 	lenFields := 0
 	if logFields != nil {
 		lenFields = logFields.Len()
@@ -55,13 +72,13 @@ func (a *Adapter) Log(level levels.Level, err error, logFields *fields.Fields, m
 		}
 	}
 
-	if err != nil {
-		lf = append(lf, slog.Any("error", err))
-	}
+	lf = getErrFields(level, err, lf, a.withTrace)
 
 	msg = fmt.Sprintf(msg, args...)
 
 	switch level {
+	case levels.TraceLevel:
+		a.logger.Debug(msg, lf...)
 	case levels.Debug:
 		a.logger.Debug(msg, lf...)
 	case levels.Info:
@@ -81,33 +98,40 @@ func (a *Adapter) Log(level levels.Level, err error, logFields *fields.Fields, m
 	}
 }
 
-func getSlogInstance(opts options) *slog.Logger {
-	if opts.logger != nil {
-		return opts.logger
+func getErrFields(level levels.Level, err error, curFields []any, withTrace bool) []any {
+	if err == nil {
+		return curFields
 	}
 
-	level := getLevels(opts.level)
+	curFields = append(curFields, slog.Any("error", err))
 
-	var handler slog.Handler = slog.NewJSONHandler(opts.writer, &slog.HandlerOptions{
+	if level == levels.TraceLevel || withTrace {
+		curFields = append(curFields, slog.Any("stacktrace", errors.GetStackTrace()))
+	}
+
+	return curFields
+}
+
+func getSlogInstance(level levels.Level, writer io.Writer) *slog.Logger {
+	handler := slog.NewJSONHandler(writer, &slog.HandlerOptions{
 		AddSource: false,
-		Level:     level,
+		Level:     getLevels(level),
 	})
-
-	if opts.handler != nil {
-		handler = opts.handler
-	}
 
 	return slog.New(handler)
 }
 
 func getLevels(level levels.Level) slog.Level {
 	levelList := map[levels.Level]slog.Level{
-		levels.Debug: slog.LevelDebug,
-		levels.Info:  slog.LevelInfo,
-		levels.Warn:  slog.LevelWarn,
-		levels.Error: slog.LevelError,
-		levels.Fatal: slog.LevelError,
-		levels.Panic: slog.LevelError,
+		levels.NoLevel:    slog.LevelInfo,
+		levels.Disabled:   slog.LevelInfo,
+		levels.TraceLevel: slog.LevelDebug,
+		levels.Debug:      slog.LevelDebug,
+		levels.Info:       slog.LevelInfo,
+		levels.Warn:       slog.LevelWarn,
+		levels.Error:      slog.LevelError,
+		levels.Fatal:      slog.LevelError,
+		levels.Panic:      slog.LevelError,
 	}
 
 	sl, exists := levelList[level]
