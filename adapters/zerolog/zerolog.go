@@ -7,10 +7,9 @@ import (
 	"runtime/debug"
 	"strings"
 
-	"github.com/rs/zerolog"
-
 	"github.com/danteay/golog/fields"
 	"github.com/danteay/golog/levels"
+	"github.com/rs/zerolog"
 )
 
 // Adapter is a zerolog adapter implementation
@@ -51,6 +50,18 @@ func (a *Adapter) Writer() io.Writer {
 // SetWriter sets the writer for the adapter
 func (a *Adapter) SetWriter(w io.Writer) {
 	a.writer = w
+	a.logger = a.logger.Output(w)
+}
+
+// Level returns the level for the adapter
+func (a *Adapter) Level() levels.Level {
+	return a.level
+}
+
+// SetLevel sets the level for the adapter
+func (a *Adapter) SetLevel(level levels.Level) {
+	a.level = level
+	a.logger = a.logger.Level(getLevels(level))
 }
 
 // Logger returns the zerolog logger instance
@@ -60,6 +71,10 @@ func (a *Adapter) Logger() zerolog.Logger {
 
 // Log logs a message with the given level, error, fields, and message
 func (a *Adapter) Log(level levels.Level, err error, logFields *fields.Fields, msg string, args ...any) {
+	if level <= levels.Disabled {
+		return
+	}
+
 	log := a.getLog(level)
 
 	addErrFields(level, err, log, a.withTrace)
@@ -75,12 +90,13 @@ func (a *Adapter) Log(level levels.Level, err error, logFields *fields.Fields, m
 
 func (a *Adapter) getLog(level levels.Level) *zerolog.Event {
 	events := map[levels.Level]func() *zerolog.Event{
-		levels.Debug: a.logger.Debug,
-		levels.Info:  a.logger.Info,
-		levels.Warn:  a.logger.Warn,
-		levels.Error: a.logger.Error,
-		levels.Fatal: a.logger.Fatal,
-		levels.Panic: a.logger.Panic,
+		levels.TraceLevel: a.logger.Trace,
+		levels.Debug:      a.logger.Debug,
+		levels.Info:       a.logger.Info,
+		levels.Warn:       a.logger.Warn,
+		levels.Error:      a.logger.Error,
+		levels.Fatal:      a.logger.Fatal,
+		levels.Panic:      a.logger.Panic,
 	}
 
 	event, exists := events[level]
