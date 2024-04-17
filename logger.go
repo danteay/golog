@@ -2,6 +2,7 @@ package golog
 
 import (
 	"context"
+	"io"
 
 	"github.com/danteay/golog/adapters/slog"
 	"github.com/danteay/golog/fields"
@@ -13,6 +14,8 @@ import (
 // Adapter is the interface that wraps the Log method.
 type Adapter interface {
 	Log(level levels.Level, err error, logFields *fields.Fields, msg string, args ...any)
+	Writer() io.Writer
+	SetWriter(w io.Writer)
 }
 
 // Logger is the main struct that holds the logger instance.
@@ -22,6 +25,8 @@ type Logger struct {
 	fields *fields.Fields
 	err    error
 }
+
+var _ io.Writer = (*Logger)(nil)
 
 // New creates a new Logger instance by using the provided context and options.
 // If no options are provided, the default options will be used (level: Info, colored: false).
@@ -84,9 +89,17 @@ func (l *Logger) Err(err error) *Logger {
 	return l
 }
 
+func (l *Logger) Write(p []byte) (n int, err error) {
+	return l.logger.Writer().Write(p)
+}
+
 // Log logs a message with the provided level, message and arguments.
 func (l *Logger) Log(level levels.Level, msg string, args ...any) {
 	defer l.reset()
+
+	if level <= levels.Disabled {
+		return
+	}
 
 	l.fields.Merge(contextfields.Fields(l.ctx))
 
