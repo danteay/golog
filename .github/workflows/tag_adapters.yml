@@ -34,7 +34,9 @@ jobs:
         uses: tj-actions/changed-files@v26.1
         with:
           files: |
-            ./adapters/${{ matrix.adapter }}/**
+            ./adapters/${{ matrix.adapter }}/**/*.go
+            ./adapters/${{ matrix.adapter }}/go.mod
+            ./adapters/${{ matrix.adapter }}/go.sum
 
       - name: Config Git User
         if: steps.check.outputs.any_changed == 'true'

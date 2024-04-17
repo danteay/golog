@@ -13,6 +13,7 @@ type options struct {
 	logger *slog.Logger
 }
 
+// Option is a function that configures the adapter.
 type Option func(*options)
 
 // WithLevel sets the log level for the logger.
