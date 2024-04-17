@@ -14,6 +14,7 @@ type options struct {
 	handler slog.Handler
 }
 
+// Option defines the signature for the options.
 type Option func(*options)
 
 // WithLevel sets the log level for the logger.
