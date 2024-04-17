@@ -15,6 +15,7 @@ type options struct {
 	logger  *zerolog.Logger
 }
 
+// Option defines the signature for the options.
 type Option func(*options)
 
 // WithLevel sets the log level for the logger.
