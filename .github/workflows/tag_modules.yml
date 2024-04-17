@@ -56,7 +56,7 @@ jobs:
 
       - name: Pull changes
         if: steps.check.outputs.any_changed == 'true'
-        run: git fetch origin --tags
+        run: git fetch --tags origin '+refs/tags/${{ matrix.module }}/*:refs/tags/${{ matrix.module }}/*'
 
       - id: cz
         name: Create bump and changelog
