@@ -88,10 +88,14 @@ func getSlogInstance(opts options) *slog.Logger {
 
 	level := getLevels(opts.level)
 
-	handler := slog.NewJSONHandler(opts.writer, &slog.HandlerOptions{
+	var handler slog.Handler = slog.NewJSONHandler(opts.writer, &slog.HandlerOptions{
 		AddSource: false,
 		Level:     level,
 	})
+
+	if opts.handler != nil {
+		handler = opts.handler
+	}
 
 	return slog.New(handler)
 }
